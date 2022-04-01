@@ -13,7 +13,7 @@ José Victor Xavier Camacho
 
 ## Atribuições
 - Nesta primeira etapa não houve divisão de trabalho, todo o código foi feito em conjunto através do discord.
-- 
+
 ## Instalação
 
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
