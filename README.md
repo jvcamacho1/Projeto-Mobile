@@ -1,12 +1,20 @@
-# project
+Leonardo Tomas Costa da Silva
+Mauricio Pavan
+José Victor Xavier Camacho
 
-A new Flutter project.
+## Bugs conhecidos
+- Tela piscando durante refresh
+- Erros de tratativa
 
-## Getting Started
+## Funcionalidades faltantes
+- Validação de login e cadastro
+- Imagem dos produtos cadastrados
+- Somátorio da lista de compras
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
+## Atribuições
+- Nesta primeira etapa não houve divisão de trabalho, todo o código foi feito em conjunto através do discord.
+- 
+## Instalação
 
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
