@@ -1,6 +1,6 @@
-Leonardo Tomas Costa da Silva
-Mauricio Pavan
-José Victor Xavier Camacho
+-Leonardo Tomas Costa da Silva
+-Mauricio Pavan
+-José Victor Xavier Camacho
 
 ## Bugs conhecidos
 - Tela piscando durante refresh
