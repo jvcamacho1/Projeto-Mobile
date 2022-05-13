@@ -5,7 +5,7 @@
 
 ## Bugs conhecidos
 - Tela piscando durante refresh
-- Erros de tratativa
+- Não é feita validação se o usuario já está cadastrado
 
 ## Atribuições
 - Nesta primeira etapa não houve divisão de trabalho, todo o código foi feito em conjunto através do discord.
