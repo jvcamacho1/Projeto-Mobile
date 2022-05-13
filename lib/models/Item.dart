@@ -3,6 +3,7 @@ class Item{
   late String _name;
   late int _amount;
   late double _price;
+  late bool _active = false;
 
   String get id => _id;
 
@@ -22,6 +23,11 @@ class Item{
 
   set amount(int value) {
     _amount = value;
+  }
+  bool get active => _active;
+
+  set active(bool value) {
+    _active = value;
   }
 
   set name(String value) {

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project/models/Item.dart';
+import 'package:project/views/EditItem.dart';
 import 'package:project/views/Login.dart';
 import 'package:project/views/NewItem.dart';
+import 'package:project/views/ShareList.dart';
 import 'package:project/views/ShoppingList.dart';
 
 class RouteGenerator {
@@ -14,6 +17,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Login());
       case "/novo-item":
         return MaterialPageRoute(builder: (_) => NewItem());
+      case "/compartilhar-lista":
+        return MaterialPageRoute(builder: (_) => ShareList());
     }
     return _errorRoute();
   }

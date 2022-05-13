@@ -1,12 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/RouteGenerator.dart';
 import 'package:project/views/Login.dart';
-import 'package:project/views/ShoppingList.dart';
 
-void main() => runApp(MaterialApp(
-  title: "Lista de compras",
-  home: Login(),
-  initialRoute: "/login",
-  onGenerateRoute: RouteGenerator.generateRoute,
-  debugShowCheckedModeBanner: false,
-));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  
+  runApp(MaterialApp(
+    title: "Lista de compras",
+    home: Login(),
+    initialRoute: "/login",
+    onGenerateRoute: RouteGenerator.generateRoute,
+    debugShowCheckedModeBanner: false,
+  ));
+}

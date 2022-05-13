@@ -1,8 +1,4 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:project/views/widgets/ButtonCustom.dart';
@@ -12,70 +8,45 @@ import '../controllers/ItemsController.dart';
 import '../controllers/NewItemController.dart';
 import '../models/Item.dart';
 
-class NewItem extends StatefulWidget {
-  const NewItem({Key? key}) : super(key: key);
+class EditItem extends StatefulWidget {
+  Item item;
+  EditItem({Key? key, required this.item}) : super(key: key);
 
   @override
-  State<NewItem> createState() => _NewItemState();
+  State<EditItem> createState() => _EditItemState();
 }
 
-class _NewItemState extends State<NewItem> {
+class _EditItemState extends State<EditItem> {
   final TextEditingController _controllerNameItem = TextEditingController();
   final TextEditingController _controllerAmount = TextEditingController();
   final TextEditingController _controllerPrice = TextEditingController();
   final ItemsController _itemsController = ItemsController();
-  final NewItemController _newItemController = NewItemController();
-  late Item _item;
   String _errorMessage = "";
   final _formKey = GlobalKey<FormState>();
 
-  _validateFieldsAndSave() async {
+  _editItem() {
     String nameItem = _controllerNameItem.text;
+    String amountItem = _controllerAmount.text;
     String priceItem = _controllerPrice.text;
 
     if (nameItem.isEmpty) {
-      setState(() {
-        _errorMessage = "Nome do item é obrigatório!";
-      });
+      nameItem = widget.item.name;
     }
-    if (_controllerAmount.text.isEmpty) {
-      setState(() {
-        _errorMessage = "Quantidade do item é obrigatório!";
-      });
+    if (amountItem.isEmpty) {
+      amountItem = widget.item.amount.toString();
     }
     if (priceItem.isEmpty) {
-      setState(() {
-        _errorMessage = "Preço do item é obrigatório!";
-      });
+      priceItem = widget.item.price.toString();
     }
+    Item itemUpdate = Item();
+    itemUpdate.name = nameItem;
+    itemUpdate.amount = int.parse(amountItem);
+    itemUpdate.price = double.parse(priceItem);
 
-    if (nameItem.isNotEmpty &&
-        _controllerAmount.text.isNotEmpty &&
-        priceItem.isNotEmpty) {
-      setState(() {
-        _errorMessage = "";
-      });
+    _itemsController.update(itemUpdate, widget.item);
 
-      
-
-      var id = UniqueKey().toString();
-      _newItemController.insertItem(id, nameItem, _controllerAmount.text, priceItem);
-      FirebaseAuth auth = FirebaseAuth.instance;
-      FirebaseFirestore db = FirebaseFirestore.instance;
-          db.collection("meus_items")
-          .doc(auth.currentUser!.uid)
-          .collection("Items").doc(id)
-          .set({
-        "id": id,
-        "name": nameItem,
-        "amout": int.parse(_controllerAmount.text),
-        "price": double.parse(priceItem),
-        "active": false
-      }).then((_) {
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "/lista-compras");
-      });
-    }
+    Navigator.pop(context);
+    Navigator.pushNamed(context, "/lista-compras");
   }
 
   @override
@@ -96,7 +67,7 @@ class _NewItemState extends State<NewItem> {
                   padding: EdgeInsets.only(top: 15),
                   child: InputCustom(
                     controller: _controllerNameItem,
-                    hintText: "Nome do item",
+                    hintText: widget.item.name,
                     autofocus: true,
                     textInputType: TextInputType.emailAddress,
                   ),
@@ -105,7 +76,7 @@ class _NewItemState extends State<NewItem> {
                   padding: EdgeInsets.only(top: 15),
                   child: InputCustom(
                     controller: _controllerAmount,
-                    hintText: "Quantidade",
+                    hintText: widget.item.amount.toString(),
                     autofocus: true,
                     textInputType: TextInputType.number,
                   ),
@@ -114,10 +85,18 @@ class _NewItemState extends State<NewItem> {
                   padding: EdgeInsets.only(top: 15),
                   child: InputCustom(
                     controller: _controllerPrice,
-                    hintText: "Preço",
+                    hintText: widget.item.price.toString(),
                     autofocus: true,
                     textInputType: TextInputType.number,
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: ButtonCustom(
+                      text: "Editar item",
+                      onPressed: () {
+                        _editItem();
+                      }),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
@@ -128,15 +107,7 @@ class _NewItemState extends State<NewItem> {
                         fontWeight: FontWeight.bold,
                         color: Colors.red),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: ButtonCustom(
-                      text: "Cadastrar item",
-                      onPressed: () {
-                        _validateFieldsAndSave();
-                      }),
-                ),
+                )
               ],
             ),
           ),

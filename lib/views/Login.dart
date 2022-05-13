@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project/models/User.dart';
 import 'package:project/views/widgets/ButtonCustom.dart';
 import 'package:project/views/widgets/InputCustom.dart';
 
@@ -17,37 +17,68 @@ class _LoginState extends State<Login> {
   String _errorMessage = "";
   String _textButton = "Entrar";
 
-  _createUser(User user) {
-    //TODO: Create user
-    Navigator.pushReplacementNamed(context, "/lista-compras");
+  registrar(String email, String senha) async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      auth
+          .createUserWithEmailAndPassword(email: email, password: senha)
+          .then((firebaseUser) => {});
+    } on FirebaseAuthException catch (e, s) {
+      _handleFirebaseLoginWithCredentialsException(e, s);
+    } on Exception catch (e, s) {
+      setState(() {
+        _errorMessage = "Error";
+      });
+    }
   }
 
-  _loginUser(User user) {
-    //TODO: Login user
-    Navigator.pushReplacementNamed(context, "/lista-compras");
+  login(String email, String senha) async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      await auth
+          .signInWithEmailAndPassword(email: email, password: senha)
+          .then((firebaseUser) {
+        Navigator.pushReplacementNamed(context, "/lista-compras");
+      });
+    } on FirebaseAuthException catch (e, s) {
+      _handleFirebaseLoginWithCredentialsException(e, s);
+    } on Exception catch (e, s) {
+      setState(() {
+        _errorMessage = "Error";
+      });
+    }
+  }
+
+  void _handleFirebaseLoginWithCredentialsException(
+      FirebaseAuthException e, StackTrace s) {
+    if (e.code == 'user-not-found') {
+      setState(() {
+        _errorMessage = "Usuario não cadastrado";
+      });
+    } else if (e.code == 'invalid-email') {
+      setState(() {
+        _errorMessage = "Email invalido";
+      });
+    } else if (e.code == 'wrong-password') {
+      setState(() {
+        _errorMessage = "Senha incorreta";
+      });
+    } else {
+      _errorMessage = "Error";
+    }
   }
 
   _validateFields() {
-    //TODO: create controller login
     String email = _controllerEmail.text;
     String password = _controllerPassword.text;
 
     if (email.isNotEmpty && email.contains("@") && email.contains(".")) {
       if (password.isNotEmpty && password.length >= 6) {
-        User user = User();
-        user.email = email;
-        user.password = password;
-
         if (_create) {
-          _createUser(user);
-          setState(() {
-            _errorMessage = "";
-          });
+          registrar(email, password);
+          Navigator.pushReplacementNamed(context, "/lista-compras");
         } else {
-          _loginUser(user);
-          setState(() {
-            _errorMessage = "";
-          });
+          login(email, password);
         }
       } else {
         setState(() {
@@ -120,6 +151,9 @@ class _LoginState extends State<Login> {
             ButtonCustom(
                 text: _textButton,
                 onPressed: () {
+                  setState(() {
+                    _errorMessage = "";
+                  });
                   _validateFields();
                 }),
             Padding(
