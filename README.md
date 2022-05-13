@@ -7,11 +7,6 @@
 - Tela piscando durante refresh
 - Erros de tratativa
 
-## Funcionalidades faltantes
-- Validação de login e cadastro
-- Imagem dos produtos cadastrados
-- Somátorio da lista de compras
-
 ## Atribuições
 - Nesta primeira etapa não houve divisão de trabalho, todo o código foi feito em conjunto através do discord.
 
