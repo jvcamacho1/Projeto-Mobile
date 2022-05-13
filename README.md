@@ -4,8 +4,9 @@
 - José Victor Xavier Camacho
 
 ## Bugs conhecidos
-- Tela piscando durante refresh
-- Não é feita validação se o usuario já está cadastrado
+- Lista de compras não atualiza sozinha, foi implementado um botão de atualizar;
+- Não é feita validação se o usuario já está cadastrado;
+- Falta de algumas tratativas de validação de login e cadastro;
 
 ## Atribuições
 - Nesta primeira etapa não houve divisão de trabalho, todo o código foi feito em conjunto através do discord.
