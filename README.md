@@ -1,16 +1,25 @@
 # projeto mobile entrega 3
 José Victor Xavier Camacho
+
 Leonardo Tomas 
+
 Mauricio Pavan
 
 #Dependencias
 cupertino_icons: ^1.0.2
+
 firebase_auth: ^3.3.14
+
 firebase_core : ^1.10.0
+
 cloud_firestore: ^3.1.14
+
 firebase_storage: ^10.2.15
+
 flutter_guid: ^0.2.0
+
 image_picker: ^0.7.4
+
 camera:
     git:
       url: https://github.com/flutter/plugins
