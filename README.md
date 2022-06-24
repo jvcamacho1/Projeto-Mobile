@@ -2,7 +2,9 @@
 
 # Integrantes
 José Victor Xavier Camacho
+
 Leonardo Tomas 
+
 Mauricio Pavan
 
 # Dependencias
