@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project/views/widgets/ButtonCustom.dart';
 import 'package:project/views/widgets/InputCustom.dart';
@@ -20,9 +22,25 @@ class _ShareListState extends State<ShareList> {
   String _errorMessage = "";
   final _formKey = GlobalKey<FormState>();
 
-  _validateFieldsAndSave() {
+  _validateFieldsAndSave() async {
     String email = _controllerEmail.text;
 
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    var data = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(auth.currentUser!.email)
+        .get();
+
+    List items = data.data()!['items'];
+    if (items.contains(email)) {
+    } else {
+      items.add(email);
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      db.collection("users").doc(auth.currentUser!.email).update({
+        "items": items,
+      });
+    }
   }
 
   @override
@@ -48,13 +66,15 @@ class _ShareListState extends State<ShareList> {
                     textInputType: TextInputType.emailAddress,
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: ButtonCustom(
-                      text: "Compartilhar Lista",
+                      text: "Receber Lista",
                       onPressed: () {
                         _validateFieldsAndSave();
+                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(
+                            context, "/lista-compras");
                       }),
                 ),
                 Padding(

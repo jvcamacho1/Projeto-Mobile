@@ -10,7 +10,6 @@ void main() async {
   runApp(MaterialApp(
     title: "Lista de compras",
     home: Login(),
-    initialRoute: "/login",
     onGenerateRoute: RouteGenerator.generateRoute,
     debugShowCheckedModeBanner: false,
   ));

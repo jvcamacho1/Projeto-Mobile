@@ -63,7 +63,7 @@ class _NewItemState extends State<NewItem> {
       FirebaseAuth auth = FirebaseAuth.instance;
       FirebaseFirestore db = FirebaseFirestore.instance;
           db.collection("meus_items")
-          .doc(auth.currentUser!.uid)
+          .doc(auth.currentUser!.email)
           .collection("Items").doc(id)
           .set({
         "id": id,
@@ -73,7 +73,7 @@ class _NewItemState extends State<NewItem> {
         "active": false
       }).then((_) {
         Navigator.pop(context);
-        Navigator.pushNamed(context, "/lista-compras");
+        Navigator.pushReplacementNamed(context, "/lista-compras");
       });
     }
   }

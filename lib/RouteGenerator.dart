@@ -3,6 +3,7 @@ import 'package:project/models/Item.dart';
 import 'package:project/views/EditItem.dart';
 import 'package:project/views/Login.dart';
 import 'package:project/views/NewItem.dart';
+import 'package:project/views/PictureItem.dart';
 import 'package:project/views/ShareList.dart';
 import 'package:project/views/ShoppingList.dart';
 

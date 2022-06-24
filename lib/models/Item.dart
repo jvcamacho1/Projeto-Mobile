@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
+
 class Item{
   late String _id;
   late String _name;
   late int _amount;
   late double _price;
   late bool _active = false;
+  late File file = File("");
 
   String get id => _id;
 

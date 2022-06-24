@@ -1,0 +1,166 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+
+import '../models/Item.dart';
+
+class DocumentosPage extends StatefulWidget {
+  Item item;
+  DocumentosPage({Key? key, required this.item}) : super(key: key);
+
+  @override
+  State<DocumentosPage> createState() => _DocumentosPageState();
+}
+
+class _DocumentosPageState extends State<DocumentosPage> {
+  List<CameraDescription> cameras = [];
+  CameraController? controller;
+  XFile? imagem;
+  Size? size;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCameras();
+  }
+
+  _loadCameras() async {
+    try {
+      cameras = await availableCameras();
+      _startCamera();
+    } on CameraException catch (e) {
+      debugPrint(e.description);
+    }
+  }
+
+  _uploadFile(XFile imageFile) async {
+    final storageRef = FirebaseStorage.instance.ref();
+    Random random = new Random();
+    int randomNumber = random.nextInt(100);
+    final imageRef = storageRef.child('${randomNumber}image.jpg');
+    File file = File(imageFile.path);
+    try {
+      await imageRef.putFile(file);
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
+  _startCamera() {
+    if (cameras.isEmpty) {
+      debugPrint('Câmera não foi encontrada');
+    } else {
+      _previewCamera(cameras.first);
+    }
+  }
+
+  _previewCamera(CameraDescription camera) async {
+    final CameraController cameraController = CameraController(
+      camera,
+      ResolutionPreset.high,
+      enableAudio: false,
+      imageFormatGroup: ImageFormatGroup.jpeg,
+    );
+    controller = cameraController;
+
+    try {
+      await cameraController.initialize();
+    } on CameraException catch (e) {
+      debugPrint(e.description);
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Documento Oficial'),
+        backgroundColor: Colors.grey[900],
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: Container(
+        color: Colors.grey[900],
+        child: Center(
+          child: _arquivoWidget(),
+        ),
+      ),
+      floatingActionButton: (imagem != null)
+          ? FloatingActionButton.extended(
+              onPressed: () => {_uploadFile(imagem!), Navigator.pop(context)},
+              label: const Text('Finalizar'),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  _arquivoWidget() {
+    return SizedBox(
+      width: size!.width - 50,
+      height: size!.height - (size!.height / 3),
+      child: imagem == null
+          ? _cameraPreviewWidget()
+          : Image.file(
+              File(imagem!.path),
+              fit: BoxFit.contain,
+            ),
+    );
+  }
+
+  _cameraPreviewWidget() {
+    final CameraController? cameraController = controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return const Text('Widget para Câmera que não está disponível');
+    } else {
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          CameraPreview(controller!),
+          _botaoCapturaWidget(),
+        ],
+      );
+    }
+  }
+
+  _botaoCapturaWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: CircleAvatar(
+        radius: 32,
+        backgroundColor: Colors.black.withOpacity(0.5),
+        child: IconButton(
+          icon: const Icon(
+            Icons.camera_alt,
+            color: Colors.white,
+            size: 30,
+          ),
+          onPressed: tirarFoto,
+        ),
+      ),
+    );
+  }
+
+  tirarFoto() async {
+    final CameraController? cameraController = controller;
+
+    if (cameraController != null && cameraController.value.isInitialized) {
+      try {
+        XFile file = await cameraController.takePicture();
+        widget.item.file = File(file.path);
+        if (mounted) setState(() => imagem = file);
+      } on CameraException catch (e) {
+        debugPrint(e.description);
+      }
+    }
+  }
+}

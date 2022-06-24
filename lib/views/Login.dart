@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project/controllers/ItemsController.dart';
 import 'package:project/views/widgets/ButtonCustom.dart';
 import 'package:project/views/widgets/InputCustom.dart';
 
@@ -16,18 +18,42 @@ class _LoginState extends State<Login> {
   bool _create = false;
   String _errorMessage = "";
   String _textButton = "Entrar";
+  final ItemsController _itemsController = ItemsController();
 
   registrar(String email, String senha) async {
-    try {
-      FirebaseAuth auth = FirebaseAuth.instance;
-      auth
-          .createUserWithEmailAndPassword(email: email, password: senha)
-          .then((firebaseUser) => {});
-    } on FirebaseAuthException catch (e, s) {
-      _handleFirebaseLoginWithCredentialsException(e, s);
-    } on Exception catch (e, s) {
+    var dataItem = await FirebaseFirestore.instance.collection("users").get();
+
+    var isEmailValid = true;
+    for (var user in dataItem.docs) {
+      if (user.id == email) {
+        isEmailValid = false;
+      }
+    }
+
+    if (isEmailValid) {
+      try {
+        FirebaseAuth auth = FirebaseAuth.instance;
+        auth
+            .createUserWithEmailAndPassword(email: email, password: senha)
+            .then((firebaseUser) => {});
+      } on FirebaseAuthException catch (e, s) {
+        _handleFirebaseLoginWithCredentialsException(e, s);
+      } on Exception catch (e, s) {
+        setState(() {
+          _errorMessage = "Error";
+        });
+      }
+
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      db.collection("users").doc(email).set({
+        "email": email,
+        "password": senha,
+        "items": [],
+      });
+      Navigator.pushReplacementNamed(context, "/lista-compras");
+    } else {
       setState(() {
-        _errorMessage = "Error";
+        _errorMessage = "Conta já existe";
       });
     }
   }
@@ -37,12 +63,10 @@ class _LoginState extends State<Login> {
       FirebaseAuth auth = FirebaseAuth.instance;
       await auth
           .signInWithEmailAndPassword(email: email, password: senha)
-          .then((firebaseUser) {
-        Navigator.pushReplacementNamed(context, "/lista-compras");
-      });
+          .then((firebaseUser) {});
     } on FirebaseAuthException catch (e, s) {
       _handleFirebaseLoginWithCredentialsException(e, s);
-    } on Exception catch (e, s) {
+    } on Exception catch (e) {
       setState(() {
         _errorMessage = "Error";
       });
@@ -76,9 +100,10 @@ class _LoginState extends State<Login> {
       if (password.isNotEmpty && password.length >= 6) {
         if (_create) {
           registrar(email, password);
-          Navigator.pushReplacementNamed(context, "/lista-compras");
         } else {
           login(email, password);
+          _itemsController.viewList2();
+          Navigator.pushReplacementNamed(context, "/lista-compras");
         }
       } else {
         setState(() {

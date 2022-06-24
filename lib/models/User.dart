@@ -3,7 +3,6 @@ import 'package:project/models/Item.dart';
 class User {
 
   late String _id;
-  late String _name;
   late String _email;
   late String _password;
   late List<Item> _items;
@@ -27,12 +26,6 @@ class User {
 
   set email(String value) {
     _email = value;
-  }
-
-  String get name => _name;
-
-  set name(String value) {
-    _name = value;
   }
 
   String get id => _id;

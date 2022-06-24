@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/views/EditItem.dart';
+import 'package:project/views/PictureItem.dart';
 import 'package:project/views/widgets/InputCustom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,7 +14,7 @@ class ShoppingList extends StatefulWidget {
 }
 
 class _ShoppingListState extends State<ShoppingList> {
-  List<String> itemsMenu = ["Atualizar", "Sair", "Compartilhar lista"];
+  List<String> itemsMenu = ["Atualizar", "Sair", "Receber lista"];
   final _formKey = GlobalKey<FormState>();
   final ItemsController _itemsController = ItemsController();
   double _total = 0;
@@ -25,7 +26,13 @@ class _ShoppingListState extends State<ShoppingList> {
           return _itemsController.count() <= 0
               ? Container()
               : GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => PictureItem(
+                                item: _itemsController.getItem(index))));
+                  },
                   child: Card(
                     child: Padding(
                       padding: EdgeInsets.all(12),
@@ -111,7 +118,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                             onPressed: () {
                                               _itemsController.remove(index);
                                               Navigator.of(context).pop();
-                                              Navigator.pushNamed(
+                                              Navigator.pushReplacementNamed(
                                                   context, "/lista-compras");
                                             },
                                           ),
@@ -155,7 +162,7 @@ class _ShoppingListState extends State<ShoppingList> {
   _chooseItemMenu(String chooseItem) {
     switch (chooseItem) {
       case "Atualizar":
-         Navigator.pushReplacementNamed(context, "/lista-compras");
+        Navigator.pushReplacementNamed(context, "/lista-compras");
         break;
       case "Sair":
         _logoutUser();
@@ -170,13 +177,12 @@ class _ShoppingListState extends State<ShoppingList> {
     FirebaseAuth auth = FirebaseAuth.instance;
     await auth.signOut();
     _itemsController.cleanList();
-    Navigator.pushNamed(context, "/login");
+    Navigator.pushReplacementNamed(context, "/login");
   }
 
   @override
   void initState() {
     super.initState();
-    _itemsController.viewList();
   }
 
   @override
