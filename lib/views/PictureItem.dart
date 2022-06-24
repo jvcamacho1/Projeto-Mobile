@@ -53,18 +53,18 @@ class _PictureItemState extends State<PictureItem> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              if (widget.item.file.path.isNotEmpty)
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 24),
-                                  child: SizedBox(
-                                      width: 200,
-                                      height: 200,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.file(widget.item.file,
-                                            fit: BoxFit.cover),
-                                      )),
-                                ),
+                            if (widget.item.file.path.isNotEmpty)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 24),
+                                child: SizedBox(
+                                    width: 200,
+                                    height: 200,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(widget.item.file,
+                                          fit: BoxFit.cover),
+                                    )),
+                              ),
                             ]))),
                 Padding(
                   padding: EdgeInsets.only(top: 15),

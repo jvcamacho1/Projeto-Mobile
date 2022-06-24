@@ -1,8 +1,8 @@
-import 'package:camera/camera.dart';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:project/models/Item.dart';
 
 class ItemsController {
@@ -162,6 +162,12 @@ class ItemsController {
     item.id = old.id;
     int index = items.indexOf(old);
     items[index] = item;
+  }
+
+  updateImage(File file) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    await storage.ref('images/img-${auth.currentUser!.email}.jpg').putFile(file);
   }
 
   viewList() {

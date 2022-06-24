@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:project/controllers/ItemsController.dart';
 
 import '../models/Item.dart';
 
@@ -20,6 +19,7 @@ class _DocumentosPageState extends State<DocumentosPage> {
   CameraController? controller;
   XFile? imagem;
   Size? size;
+  ItemsController itemsController = ItemsController();
 
   @override
   void initState() {
@@ -33,19 +33,6 @@ class _DocumentosPageState extends State<DocumentosPage> {
       _startCamera();
     } on CameraException catch (e) {
       debugPrint(e.description);
-    }
-  }
-
-  _uploadFile(XFile imageFile) async {
-    final storageRef = FirebaseStorage.instance.ref();
-    Random random = new Random();
-    int randomNumber = random.nextInt(100);
-    final imageRef = storageRef.child('${randomNumber}image.jpg');
-    File file = File(imageFile.path);
-    try {
-      await imageRef.putFile(file);
-    } on FirebaseException catch (e) {
-      print(e);
     }
   }
 
@@ -95,7 +82,7 @@ class _DocumentosPageState extends State<DocumentosPage> {
       ),
       floatingActionButton: (imagem != null)
           ? FloatingActionButton.extended(
-              onPressed: () => {_uploadFile(imagem!), Navigator.pop(context)},
+              onPressed: () => Navigator.pop(context),
               label: const Text('Finalizar'),
             )
           : null,
@@ -157,6 +144,7 @@ class _DocumentosPageState extends State<DocumentosPage> {
       try {
         XFile file = await cameraController.takePicture();
         widget.item.file = File(file.path);
+        itemsController.updateImage(widget.item.file);
         if (mounted) setState(() => imagem = file);
       } on CameraException catch (e) {
         debugPrint(e.description);

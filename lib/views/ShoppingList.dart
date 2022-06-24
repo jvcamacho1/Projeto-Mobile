@@ -14,7 +14,7 @@ class ShoppingList extends StatefulWidget {
 }
 
 class _ShoppingListState extends State<ShoppingList> {
-  List<String> itemsMenu = ["Atualizar", "Sair", "Receber lista"];
+  List<String> itemsMenu = ["Atualizar", "Sair", "Receber lista", "Compartilhar lista"];
   final _formKey = GlobalKey<FormState>();
   final ItemsController _itemsController = ItemsController();
   double _total = 0;
